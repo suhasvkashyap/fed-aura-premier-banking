@@ -1,6 +1,6 @@
 # Fed Aura Capital — AI Financial Advisor Demo
 
-A live demo app showing RHOAI observability in action. Chat with a banking AI advisor backed by Gemma4 on the MaaS gateway while watching Perses dashboards update in real-time.
+A live demo app showing RHOAI observability in action. Chat with a banking AI advisor backed by Gemma4 on the MaaS gateway while watching both **Perses dashboards** (infrastructure metrics) and **MLflow traces** (application-level debugging) update in real-time.
 
 ## Quick Start
 
@@ -34,6 +34,30 @@ Arrange your screen: Fed Aura chatbot on the left, Perses dashboard (`Observe �
 3. Type **"Am I eligible for a 30-year mortgage?"** — model evaluates based on credit score and income
 4. Type **"How is my investment portfolio doing?"** — model summarizes holdings and YTD performance
 5. Point to Perses: *"Every message hit Gemma4 via llm-d. TTFT, token consumption, request throughput — all visible in real-time."*
+6. Switch to MLflow UI (`http://localhost:5000`) — *"Now look at the application layer. Every chat message created a trace. I can see the exact prompt, the full response, token counts, and latency. If something went wrong, I trace it here."*
+
+## MLflow Tracing
+
+Every chat message automatically creates an MLflow trace under the **"Fed Aura Capital"** experiment. No extra setup needed — `run.sh` starts a local MLflow server alongside the app.
+
+**What each trace shows:**
+- **Root span** (`fed-aura-chat`): the user's question and the full assistant response
+- **Child span** (`llm-inference`): the model call with prompt tokens, completion tokens, TTFT, total latency, and model name
+
+**How to view traces:**
+1. Open `http://localhost:5000` in your browser
+2. Click the **"Fed Aura Capital"** experiment
+3. Click **Traces** tab to see all chat interactions
+4. Click any trace to see the full span tree, inputs, outputs, and token usage
+
+**Two observability layers in one demo:**
+
+| Layer | Tool | What it shows | Who cares |
+|-------|------|--------------|-----------|
+| Infrastructure | Perses | TTFT, throughput, GPU utilization, queue depth, token consumption | Platform SRE |
+| Application | MLflow | Prompt/response content, per-request tokens, latency, trace tree | ML Engineer |
+
+**Note:** Background load (`background_load.sh`) only populates Perses — it hits vLLM directly via curl, bypassing the app. This is intentional: it demonstrates that Perses captures all platform traffic while MLflow only traces application-instrumented requests.
 
 ## Sample Questions
 
@@ -98,6 +122,8 @@ These show the model retaining context across messages:
 | `MAAS_MODEL` | `gemma4` | Model name |
 | `MAX_TOKENS` | `512` | Max response tokens |
 | `PORT` | `8080` | Local server port |
+| `MLFLOW_TRACKING_URI` | `http://localhost:5000` | MLflow server URL (local or remote) |
+| `MLFLOW_EXPERIMENT_NAME` | `Fed Aura Capital` | MLflow experiment name |
 
 ## Files
 
