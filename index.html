@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fed Aura Capital - AI Financial Advisor</title>
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-light: #132240;
+    --gold: #c9a84c;
+    --gold-light: #e8d48b;
+    --surface: #f7f8fa;
+    --border: #e2e5ea;
+    --text: #1a1a2e;
+    --text-dim: #6b7280;
+    --white: #ffffff;
+    --green: #16a34a;
+    --red-subtle: #fef2f2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  .header {
+    background: var(--navy);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--navy);
+  }
+  .logo-text {
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .logo-text span { color: var(--gold); }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .user-badge {
+    color: var(--gold-light);
+    font-size: 13px;
+    opacity: 0.9;
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+  }
+
+  /* Chat area */
+  .chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Message bubbles */
+  .message {
+    display: flex;
+    gap: 10px;
+    max-width: 85%;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .message.user { align-self: flex-end; flex-direction: row-reverse; }
+  .message.assistant { align-self: flex-start; }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .message.user .avatar {
+    background: var(--navy-light);
+    color: var(--gold);
+  }
+  .message.assistant .avatar {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    line-height: 1.55;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .message.user .bubble {
+    background: var(--navy);
+    color: var(--white);
+    border-bottom-right-radius: 4px;
+  }
+  .message.assistant .bubble {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+  }
+  .message.assistant .bubble.error {
+    background: var(--red-subtle);
+    border-color: #fca5a5;
+    color: #991b1b;
+  }
+  .metrics {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* Typing indicator */
+  .typing-dots span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: bounce 1.2s infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
+  }
+
+  /* Quick actions */
+  .quick-actions {
+    padding: 8px 16px 4px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .quick-btn {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 13px;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .quick-btn:hover {
+    background: var(--navy);
+    color: var(--gold);
+    border-color: var(--navy);
+  }
+
+  /* Input area */
+  .input-area {
+    padding: 12px 16px 16px;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .input-row {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .input-row textarea {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    min-height: 42px;
+    max-height: 120px;
+    line-height: 1.4;
+    transition: border-color 0.15s;
+  }
+  .input-row textarea:focus { border-color: var(--gold); }
+  .send-btn {
+    width: 42px;
+    height: 42px;
+    background: var(--navy);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .send-btn:hover { background: var(--gold); }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .send-btn svg { width: 18px; height: 18px; fill: var(--white); }
+  .send-btn:hover svg { fill: var(--navy); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 8px;
+    font-size: 11px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .footer strong { color: #ee0000; }
+
+  /* Welcome */
+  .welcome {
+    text-align: center;
+    padding: 32px 16px 8px;
+    color: var(--text-dim);
+  }
+  .welcome h2 {
+    color: var(--navy);
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .welcome p { font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">FA</div>
+    <div class="logo-text">Fed <span>Aura</span> Capital</div>
+  </div>
+  <div class="header-right">
+    <div class="user-badge"><span class="status-dot"></span>Sarah Chen - Premier Banking</div>
+  </div>
+</div>
+
+<div class="chat-container">
+  <div class="messages" id="messages">
+    <div class="welcome">
+      <h2>Welcome back, Sarah</h2>
+      <p>I'm Aura, your AI financial advisor. How can I help you today?</p>
+    </div>
+  </div>
+
+  <div class="quick-actions" id="quickActions">
+    <button class="quick-btn" onclick="sendQuick('What is my checking account balance?')">Check my balance</button>
+    <button class="quick-btn" onclick="sendQuick('Show my last 5 transactions')">Recent transactions</button>
+    <button class="quick-btn" onclick="sendQuick('What mortgage rates do you offer? Am I eligible?')">Mortgage rates</button>
+    <button class="quick-btn" onclick="sendQuick('How is my investment portfolio performing?')">Portfolio summary</button>
+    <button class="quick-btn" onclick="sendQuick('Where is the nearest branch and what are the hours?')">Find a branch</button>
+  </div>
+
+  <div class="input-area">
+    <div class="input-row">
+      <textarea id="userInput" rows="1" placeholder="Ask Aura anything about your accounts..." onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Powered by <strong>Red Hat</strong> OpenShift AI &middot; Model: Gemma4 via llm-d &middot; Observability: Perses + Prometheus
+</div>
+
+<script>
+const messagesEl = document.getElementById('messages');
+const inputEl = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const quickActionsEl = document.getElementById('quickActions');
+let history = [];
+let sending = false;
+
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function sendQuick(text) {
+  inputEl.value = text;
+  sendMessage();
+}
+
+function addMessage(role, content, metrics) {
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  const initials = role === 'user' ? 'SC' : 'A';
+  let metricsHtml = '';
+  if (metrics) {
+    metricsHtml = `<div class="metrics">TTFT: ${metrics.ttft_ms}ms | Total: ${metrics.total_ms}ms</div>`;
+  }
+  div.innerHTML = `
+    <div class="avatar">${initials}</div>
+    <div>
+      <div class="bubble">${escapeHtml(content)}</div>
+      ${metricsHtml}
+    </div>`;
+  messagesEl.appendChild(div);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  return div;
+}
+
+function addTypingIndicator() {
+  const div = document.createElement('div');
+  div.className = 'message assistant';
+  div.id = 'typing';
+  div.innerHTML = `
+    <div class="avatar">A</div>
+    <div>
+      <div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+    </div>`;
+  messagesEl.appendChild(div);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function removeTypingIndicator() {
+  const el = document.getElementById('typing');
+  if (el) el.remove();
+}
+
+function escapeHtml(text) {
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text || sending) return;
+
+  sending = true;
+  sendBtn.disabled = true;
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  quickActionsEl.style.display = 'none';
+
+  addMessage('user', text);
+  history.push({ role: 'user', content: text });
+
+  addTypingIndicator();
+
+  let fullResponse = '';
+  let metrics = null;
+  let bubbleEl = null;
+  let isError = false;
+
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, history: history.slice(0, -1) }),
+    });
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const data = JSON.parse(line.slice(6));
+
+          if (data.error) {
+            removeTypingIndicator();
+            const errDiv = addMessage('assistant', data.content);
+            errDiv.querySelector('.bubble').classList.add('error');
+            isError = true;
+            break;
+          }
+
+          if (data.content) {
+            if (!bubbleEl) {
+              removeTypingIndicator();
+              const msgDiv = document.createElement('div');
+              msgDiv.className = 'message assistant';
+              msgDiv.innerHTML = `
+                <div class="avatar">A</div>
+                <div>
+                  <div class="bubble"></div>
+                  <div class="metrics" id="liveMetrics"></div>
+                </div>`;
+              messagesEl.appendChild(msgDiv);
+              bubbleEl = msgDiv.querySelector('.bubble');
+            }
+            fullResponse += data.content;
+            bubbleEl.textContent = fullResponse;
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+          }
+
+          if (data.done) {
+            metrics = { ttft_ms: data.ttft_ms, total_ms: data.total_ms };
+            const metricsEl = document.getElementById('liveMetrics');
+            if (metricsEl) {
+              metricsEl.textContent = `TTFT: ${data.ttft_ms}ms | Total: ${data.total_ms}ms`;
+            }
+          }
+        } catch (e) { /* skip malformed chunks */ }
+      }
+      if (isError) break;
+    }
+  } catch (err) {
+    removeTypingIndicator();
+    const errDiv = addMessage('assistant', `Connection error: ${err.message}`);
+    errDiv.querySelector('.bubble').classList.add('error');
+    isError = true;
+  }
+
+  if (!isError && fullResponse) {
+    history.push({ role: 'assistant', content: fullResponse });
+  }
+
+  removeTypingIndicator();
+  sending = false;
+  sendBtn.disabled = false;
+  inputEl.focus();
+}
+
+inputEl.focus();
+</script>
+</body>
+</html>
