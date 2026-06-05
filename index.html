@@ -21,18 +21,29 @@
     flex-direction: column;
   }
 
-  /* PF6 Masthead */
-  .pf-v6-c-masthead {
-    --pf-v6-c-masthead--BackgroundColor: var(--fa-navy);
+  /* Header bar */
+  .app-header {
+    background: var(--fa-navy);
+    padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
   }
-  .pf-v6-c-masthead__brand img { height: 32px; width: auto; }
-  .pf-v6-c-masthead__brand-text {
+  .app-header__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--pf-t--global--spacer--sm);
+    text-decoration: none;
+  }
+  .app-header__brand img { height: 32px; width: auto; }
+  .app-header__brand-text {
     color: var(--pf-t--global--text--color--inverse);
     font-size: var(--pf-t--global--font--size--lg);
     font-weight: var(--pf-t--global--font--weight--bold);
     letter-spacing: 0.3px;
   }
-  .pf-v6-c-masthead__brand-text .brand-highlight { color: var(--fa-gold); }
+  .app-header__brand-text .brand-highlight { color: var(--fa-gold); }
   .user-label {
     color: var(--fa-gold-light);
     font-size: var(--pf-t--global--font--size--sm);
@@ -246,17 +257,12 @@
 </head>
 <body>
 
-<!-- PF6 Masthead -->
-<header class="pf-v6-c-masthead">
-  <div class="pf-v6-c-masthead__main">
-    <a class="pf-v6-c-masthead__brand" href="/">
-      <img src="/logo.svg" alt="Fed Aura Capital" aria-hidden="true">
-      <span class="pf-v6-c-masthead__brand-text">Fed <span class="brand-highlight">Aura</span> Capital</span>
-    </a>
-  </div>
-  <div class="pf-v6-c-masthead__content">
-    <span class="user-label"><span class="status-dot"></span>Sarah Chen &mdash; Premier Banking</span>
-  </div>
+<header class="app-header">
+  <a class="app-header__brand" href="/">
+    <img src="/logo.svg" alt="Fed Aura Capital">
+    <span class="app-header__brand-text">Fed <span class="brand-highlight">Aura</span> Capital</span>
+  </a>
+  <span class="user-label"><span class="status-dot"></span>Sarah Chen &mdash; Premier Banking</span>
 </header>
 
 <!-- Chat body -->
