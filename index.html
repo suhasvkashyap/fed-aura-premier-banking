@@ -36,7 +36,7 @@
     gap: var(--pf-t--global--spacer--sm);
     text-decoration: none;
   }
-  .app-header__brand img { height: 32px; width: auto; }
+  .app-header__brand svg { height: 32px; width: 32px; flex-shrink: 0; }
   .app-header__brand-text {
     color: var(--pf-t--global--text--color--inverse);
     font-size: var(--pf-t--global--font--size--lg);
@@ -189,10 +189,14 @@
     cursor: pointer;
     transition: all 0.15s ease;
   }
-  .quick-btn:hover {
+  .quick-btn:hover:not(:disabled) {
     background: var(--fa-navy);
     color: var(--fa-gold);
     border-color: var(--fa-navy);
+  }
+  .quick-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 
   /* Input area */
@@ -259,10 +263,16 @@
 
 <header class="app-header">
   <a class="app-header__brand" href="/">
-    <img src="/logo.svg" alt="Fed Aura Capital">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <polygon points="16,3 29,14 3,14" fill="#CC0000"/>
+      <rect x="6" y="14" width="20" height="15" fill="#CC0000" opacity="0.85"/>
+      <rect x="13" y="21" width="6" height="8" rx="1" fill="white" opacity="0.9"/>
+      <rect x="8" y="17" width="4" height="3" rx="0.5" fill="white" opacity="0.9"/>
+      <rect x="20" y="17" width="4" height="3" rx="0.5" fill="white" opacity="0.9"/>
+    </svg>
     <span class="app-header__brand-text">Fed <span class="brand-highlight">Aura</span> Capital</span>
   </a>
-  <span class="user-label"><span class="status-dot"></span>Sarah Chen &mdash; Premier Banking</span>
+  <span class="user-label"><span class="status-dot"></span>Sarah Chen &mdash; Premier&nbsp;Banking</span>
 </header>
 
 <!-- Chat body -->
@@ -369,7 +379,7 @@ async function sendMessage() {
   sendBtn.disabled = true;
   inputEl.value = '';
   inputEl.style.height = 'auto';
-  quickActionsEl.style.display = 'none';
+  quickActionsEl.querySelectorAll('.quick-btn').forEach(btn => btn.disabled = true);
 
   addMessage('user', text);
   history.push({ role: 'user', content: text });
@@ -457,6 +467,7 @@ async function sendMessage() {
   removeTypingIndicator();
   sending = false;
   sendBtn.disabled = false;
+  quickActionsEl.querySelectorAll('.quick-btn').forEach(btn => btn.disabled = false);
   inputEl.focus();
 }
 
