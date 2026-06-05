@@ -4,222 +4,207 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fed Aura Capital - AI Financial Advisor</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@patternfly/patternfly@6/patternfly.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@patternfly/patternfly@6/patternfly-addons.css">
 <style>
   :root {
-    --navy: #0a1628;
-    --navy-light: #132240;
-    --gold: #c9a84c;
-    --gold-light: #e8d48b;
-    --surface: #f7f8fa;
-    --border: #e2e5ea;
-    --text: #1a1a2e;
-    --text-dim: #6b7280;
-    --white: #ffffff;
-    --green: #16a34a;
-    --red-subtle: #fef2f2;
+    --fa-navy: #0a1628;
+    --fa-navy-light: #132240;
+    --fa-gold: #c9a84c;
+    --fa-gold-light: #e8d48b;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--surface);
-    color: var(--text);
-    height: 100vh;
+    font-family: var(--pf-t--global--font--family--text);
+    background: var(--pf-t--global--background--color--secondary--default);
     display: flex;
     flex-direction: column;
   }
 
-  /* Header */
-  .header {
-    background: var(--navy);
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
+  /* PF6 Masthead */
+  .pf-v6-c-masthead {
+    --pf-v6-c-masthead--BackgroundColor: var(--fa-navy);
   }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .pf-v6-c-masthead__brand img { height: 32px; width: auto; }
+  .pf-v6-c-masthead__brand-text {
+    color: var(--pf-t--global--text--color--inverse);
+    font-size: var(--pf-t--global--font--size--lg);
+    font-weight: var(--pf-t--global--font--weight--bold);
+    letter-spacing: 0.3px;
   }
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--gold);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--navy);
-  }
-  .logo-text {
-    color: var(--white);
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-  .logo-text span { color: var(--gold); }
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .user-badge {
-    color: var(--gold-light);
-    font-size: 13px;
-    opacity: 0.9;
+  .pf-v6-c-masthead__brand-text .brand-highlight { color: var(--fa-gold); }
+  .user-label {
+    color: var(--fa-gold-light);
+    font-size: var(--pf-t--global--font--size--sm);
   }
   .status-dot {
-    width: 8px;
-    height: 8px;
-    background: var(--green);
-    border-radius: 50%;
     display: inline-block;
-    margin-right: 6px;
+    width: 8px; height: 8px;
+    background: var(--pf-t--global--color--status--success--default);
+    border-radius: 50%;
+    margin-right: var(--pf-t--global--spacer--xs);
   }
 
-  /* Chat area */
-  .chat-container {
+  /* Chat layout */
+  .chat-wrapper {
     flex: 1;
     display: flex;
     flex-direction: column;
-    max-width: 800px;
+    max-width: 840px;
     width: 100%;
     margin: 0 auto;
     overflow: hidden;
   }
-  .messages {
+  .chat-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 24px 16px;
+    padding: var(--pf-t--global--spacer--lg) var(--pf-t--global--spacer--md);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--pf-t--global--spacer--md);
   }
 
-  /* Message bubbles */
-  .message {
-    display: flex;
-    gap: 10px;
-    max-width: 85%;
-    animation: fadeIn 0.2s ease;
+  /* Welcome */
+  .welcome-block {
+    text-align: center;
+    padding: var(--pf-t--global--spacer--2xl) var(--pf-t--global--spacer--md) var(--pf-t--global--spacer--sm);
   }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  .message.user { align-self: flex-end; flex-direction: row-reverse; }
-  .message.assistant { align-self: flex-start; }
-  .avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+  .welcome-block h2 {
+    font-size: var(--pf-t--global--font--size--xl);
+    font-weight: var(--pf-t--global--font--weight--bold);
+    color: var(--fa-navy);
+    margin-bottom: var(--pf-t--global--spacer--xs);
+  }
+  .welcome-block p {
+    font-size: var(--pf-t--global--font--size--md);
+    color: var(--pf-t--global--text--color--subtle);
+  }
+
+  /* Message rows */
+  .msg-row {
+    display: flex;
+    gap: var(--pf-t--global--spacer--sm);
+    max-width: 85%;
+    animation: msgIn 0.2s ease;
+  }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .msg-row.user { align-self: flex-end; flex-direction: row-reverse; }
+  .msg-row.assistant { align-self: flex-start; }
+
+  /* Avatars */
+  .msg-avatar {
+    width: 36px; height: 36px;
+    border-radius: var(--pf-t--global--border--radius--pill);
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: var(--pf-t--global--font--size--sm);
+    font-weight: var(--pf-t--global--font--weight--bold);
   }
-  .message.user .avatar {
-    background: var(--navy-light);
-    color: var(--gold);
+  .msg-row.user .msg-avatar {
+    background: var(--fa-navy-light);
+    color: var(--fa-gold);
   }
-  .message.assistant .avatar {
-    background: var(--gold);
-    color: var(--navy);
+  .msg-row.assistant .msg-avatar {
+    background: var(--fa-gold);
+    color: var(--fa-navy);
   }
-  .bubble {
-    padding: 12px 16px;
-    border-radius: 16px;
-    line-height: 1.55;
-    font-size: 14px;
+
+  /* Bubbles following PF6 card pattern */
+  .msg-body {}
+  .msg-bubble {
+    padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md);
+    border-radius: var(--pf-t--global--border--radius--large);
+    font-size: var(--pf-t--global--font--size--md);
+    line-height: var(--pf-t--global--font--line-height--body);
     white-space: pre-wrap;
     word-break: break-word;
   }
-  .message.user .bubble {
-    background: var(--navy);
-    color: var(--white);
-    border-bottom-right-radius: 4px;
+  .msg-row.user .msg-bubble {
+    background: var(--fa-navy);
+    color: var(--pf-t--global--text--color--inverse);
+    border-bottom-right-radius: var(--pf-t--global--border--radius--small);
   }
-  .message.assistant .bubble {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-bottom-left-radius: 4px;
+  .msg-row.assistant .msg-bubble {
+    background: var(--pf-t--global--background--color--primary--default);
+    border: var(--pf-t--global--border--width--box--default) solid var(--pf-t--global--border--color--default);
+    border-bottom-left-radius: var(--pf-t--global--border--radius--small);
   }
-  .message.assistant .bubble.error {
-    background: var(--red-subtle);
-    border-color: #fca5a5;
-    color: #991b1b;
+  .msg-row.assistant .msg-bubble.error-bubble {
+    background: var(--pf-t--global--color--status--danger--default);
+    color: var(--pf-t--global--text--color--inverse);
+    border-color: var(--pf-t--global--color--status--danger--default);
   }
-  .metrics {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 6px;
-    font-family: 'SF Mono', 'Fira Code', monospace;
+  .msg-metrics {
+    margin-top: var(--pf-t--global--spacer--xs);
+    font-size: var(--pf-t--global--font--size--xs);
+    color: var(--pf-t--global--text--color--subtle);
+    font-family: var(--pf-t--global--font--family--mono);
   }
 
   /* Typing indicator */
   .typing-dots span {
     display: inline-block;
-    width: 6px;
-    height: 6px;
-    background: var(--text-dim);
+    width: 6px; height: 6px;
+    background: var(--pf-t--global--text--color--subtle);
     border-radius: 50%;
     margin: 0 2px;
-    animation: bounce 1.2s infinite;
+    animation: dotBounce 1.2s infinite;
   }
   .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
   .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
+  @keyframes dotBounce {
     0%, 60%, 100% { transform: translateY(0); }
     30% { transform: translateY(-6px); }
   }
 
-  /* Quick actions */
+  /* Quick actions - PF6 label group style */
   .quick-actions {
-    padding: 8px 16px 4px;
+    padding: var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--md);
     display: flex;
-    gap: 8px;
+    gap: var(--pf-t--global--spacer--sm);
     flex-wrap: wrap;
     justify-content: center;
   }
   .quick-btn {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 7px 14px;
-    font-size: 13px;
-    color: var(--navy);
+    font-family: inherit;
+    font-size: var(--pf-t--global--font--size--sm);
+    padding: var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--md);
+    border-radius: var(--pf-t--global--border--radius--pill);
+    border: var(--pf-t--global--border--width--box--default) solid var(--pf-t--global--border--color--default);
+    background: var(--pf-t--global--background--color--primary--default);
+    color: var(--fa-navy);
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.15s ease;
   }
   .quick-btn:hover {
-    background: var(--navy);
-    color: var(--gold);
-    border-color: var(--navy);
+    background: var(--fa-navy);
+    color: var(--fa-gold);
+    border-color: var(--fa-navy);
   }
 
   /* Input area */
   .input-area {
-    padding: 12px 16px 16px;
-    background: var(--white);
-    border-top: 1px solid var(--border);
+    padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md) var(--pf-t--global--spacer--md);
+    background: var(--pf-t--global--background--color--primary--default);
+    border-top: var(--pf-t--global--border--width--box--default) solid var(--pf-t--global--border--color--default);
     flex-shrink: 0;
   }
   .input-row {
-    max-width: 800px;
+    max-width: 840px;
     margin: 0 auto;
     display: flex;
-    gap: 10px;
+    gap: var(--pf-t--global--spacer--sm);
     align-items: flex-end;
   }
   .input-row textarea {
     flex: 1;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    font-size: 14px;
     font-family: inherit;
+    font-size: var(--pf-t--global--font--size--md);
+    padding: var(--pf-t--global--spacer--sm) var(--pf-t--global--spacer--md);
+    border: var(--pf-t--global--border--width--box--default) solid var(--pf-t--global--border--color--default);
+    border-radius: var(--pf-t--global--border--radius--medium);
     resize: none;
     outline: none;
     min-height: 42px;
@@ -227,13 +212,15 @@
     line-height: 1.4;
     transition: border-color 0.15s;
   }
-  .input-row textarea:focus { border-color: var(--gold); }
+  .input-row textarea:focus {
+    border-color: var(--pf-t--global--border--color--hover);
+    box-shadow: 0 0 0 1px var(--pf-t--global--border--color--hover);
+  }
   .send-btn {
-    width: 42px;
-    height: 42px;
-    background: var(--navy);
+    width: 42px; height: 42px;
+    background: var(--fa-navy);
     border: none;
-    border-radius: 12px;
+    border-radius: var(--pf-t--global--border--radius--medium);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -241,50 +228,41 @@
     transition: background 0.15s;
     flex-shrink: 0;
   }
-  .send-btn:hover { background: var(--gold); }
+  .send-btn:hover { background: var(--fa-gold); }
   .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .send-btn svg { width: 18px; height: 18px; fill: var(--white); }
-  .send-btn:hover svg { fill: var(--navy); }
+  .send-btn svg { width: 18px; height: 18px; fill: #fff; }
+  .send-btn:hover svg { fill: var(--fa-navy); }
 
   /* Footer */
-  .footer {
+  .demo-footer {
     text-align: center;
-    padding: 8px;
-    font-size: 11px;
-    color: var(--text-dim);
+    padding: var(--pf-t--global--spacer--xs);
+    font-size: var(--pf-t--global--font--size--xs);
+    color: var(--pf-t--global--text--color--subtle);
     flex-shrink: 0;
   }
-  .footer strong { color: #ee0000; }
-
-  /* Welcome */
-  .welcome {
-    text-align: center;
-    padding: 32px 16px 8px;
-    color: var(--text-dim);
-  }
-  .welcome h2 {
-    color: var(--navy);
-    font-size: 20px;
-    margin-bottom: 6px;
-  }
-  .welcome p { font-size: 14px; }
+  .demo-footer .rh-red { color: #ee0000; font-weight: var(--pf-t--global--font--weight--bold); }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo">
-    <div class="logo-icon">FA</div>
-    <div class="logo-text">Fed <span>Aura</span> Capital</div>
+<!-- PF6 Masthead -->
+<header class="pf-v6-c-masthead">
+  <div class="pf-v6-c-masthead__main">
+    <a class="pf-v6-c-masthead__brand" href="/">
+      <img src="/logo.svg" alt="Fed Aura Capital" aria-hidden="true">
+      <span class="pf-v6-c-masthead__brand-text">Fed <span class="brand-highlight">Aura</span> Capital</span>
+    </a>
   </div>
-  <div class="header-right">
-    <div class="user-badge"><span class="status-dot"></span>Sarah Chen - Premier Banking</div>
+  <div class="pf-v6-c-masthead__content">
+    <span class="user-label"><span class="status-dot"></span>Sarah Chen &mdash; Premier Banking</span>
   </div>
-</div>
+</header>
 
-<div class="chat-container">
-  <div class="messages" id="messages">
-    <div class="welcome">
+<!-- Chat body -->
+<div class="chat-wrapper">
+  <div class="chat-messages" id="messages">
+    <div class="welcome-block">
       <h2>Welcome back, Sarah</h2>
       <p>I'm Aura, your AI financial advisor. How can I help you today?</p>
     </div>
@@ -301,15 +279,15 @@
   <div class="input-area">
     <div class="input-row">
       <textarea id="userInput" rows="1" placeholder="Ask Aura anything about your accounts..." onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="Send message">
         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
       </button>
     </div>
   </div>
 </div>
 
-<div class="footer">
-  Powered by <strong>Red Hat</strong> OpenShift AI &middot; Model: Gemma4 via llm-d &middot; Observability: Perses + Prometheus
+<div class="demo-footer">
+  Powered by <span class="rh-red">Red Hat</span> OpenShift AI &middot; Model: Gemma4 via llm-d &middot; Observability: Perses + Prometheus
 </div>
 
 <script>
@@ -336,16 +314,16 @@ function sendQuick(text) {
 
 function addMessage(role, content, metrics) {
   const div = document.createElement('div');
-  div.className = `message ${role}`;
+  div.className = `msg-row ${role}`;
   const initials = role === 'user' ? 'SC' : 'A';
   let metricsHtml = '';
   if (metrics) {
-    metricsHtml = `<div class="metrics">TTFT: ${metrics.ttft_ms}ms | Total: ${metrics.total_ms}ms</div>`;
+    metricsHtml = `<div class="msg-metrics">TTFT: ${metrics.ttft_ms}ms | Total: ${metrics.total_ms}ms</div>`;
   }
   div.innerHTML = `
-    <div class="avatar">${initials}</div>
-    <div>
-      <div class="bubble">${escapeHtml(content)}</div>
+    <div class="msg-avatar">${initials}</div>
+    <div class="msg-body">
+      <div class="msg-bubble">${escapeHtml(content)}</div>
       ${metricsHtml}
     </div>`;
   messagesEl.appendChild(div);
@@ -355,12 +333,12 @@ function addMessage(role, content, metrics) {
 
 function addTypingIndicator() {
   const div = document.createElement('div');
-  div.className = 'message assistant';
+  div.className = 'msg-row assistant';
   div.id = 'typing';
   div.innerHTML = `
-    <div class="avatar">A</div>
-    <div>
-      <div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+    <div class="msg-avatar">A</div>
+    <div class="msg-body">
+      <div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>
     </div>`;
   messagesEl.appendChild(div);
   messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -424,7 +402,7 @@ async function sendMessage() {
           if (data.error) {
             removeTypingIndicator();
             const errDiv = addMessage('assistant', data.content);
-            errDiv.querySelector('.bubble').classList.add('error');
+            errDiv.querySelector('.msg-bubble').classList.add('error-bubble');
             isError = true;
             break;
           }
@@ -433,15 +411,15 @@ async function sendMessage() {
             if (!bubbleEl) {
               removeTypingIndicator();
               const msgDiv = document.createElement('div');
-              msgDiv.className = 'message assistant';
+              msgDiv.className = 'msg-row assistant';
               msgDiv.innerHTML = `
-                <div class="avatar">A</div>
-                <div>
-                  <div class="bubble"></div>
-                  <div class="metrics" id="liveMetrics"></div>
+                <div class="msg-avatar">A</div>
+                <div class="msg-body">
+                  <div class="msg-bubble"></div>
+                  <div class="msg-metrics" id="liveMetrics"></div>
                 </div>`;
               messagesEl.appendChild(msgDiv);
-              bubbleEl = msgDiv.querySelector('.bubble');
+              bubbleEl = msgDiv.querySelector('.msg-bubble');
             }
             fullResponse += data.content;
             bubbleEl.textContent = fullResponse;
@@ -462,7 +440,7 @@ async function sendMessage() {
   } catch (err) {
     removeTypingIndicator();
     const errDiv = addMessage('assistant', `Connection error: ${err.message}`);
-    errDiv.querySelector('.bubble').classList.add('error');
+    errDiv.querySelector('.msg-bubble').classList.add('error-bubble');
     isError = true;
   }
 

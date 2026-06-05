@@ -9,7 +9,7 @@ load_dotenv(Path(__file__).parent / ".env")
 
 import httpx
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, StreamingResponse, Response
 
 from bank_data import SYSTEM_PROMPT
 
@@ -28,6 +28,12 @@ MAX_TOKENS = int(os.environ.get("MAX_TOKENS", "512"))
 async def index():
     html_path = Path(__file__).parent / "index.html"
     return HTMLResponse(html_path.read_text())
+
+
+@app.get("/logo.svg")
+async def logo():
+    svg_path = Path(__file__).parent / "fed-aura-logo.svg"
+    return Response(svg_path.read_text(), media_type="image/svg+xml")
 
 
 @app.post("/api/chat")
